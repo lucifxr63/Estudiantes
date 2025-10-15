@@ -1,0 +1,101 @@
+name: Change Digest
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # necesitamos historial para comparar
+
+      - name: Build change digest
+        id: digest
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BEFORE_SHA="${{ github.event.before }}"
+          AFTER_SHA="${{ github.sha }}"
+
+          # Maneja primer push (before puede ser 000000... o vacío)
+          if [ -z "${BEFORE_SHA}" ] || [[ "${BEFORE_SHA}" == "0000000000000000000000000000000000000000" ]]; then
+            # Toma el commit anterior si existe, sino compara contra árbol vacío
+            if git rev-parse "${AFTER_SHA}~1" >/dev/null 2>&1; then
+              BEFORE_SHA="$(git rev-parse "${AFTER_SHA}~1")"
+            else
+              BEFORE_SHA="$(git hash-object -t tree /dev/null)"
+            fi
+          fi
+
+          REPO="${GITHUB_REPOSITORY}"
+          BRANCH="${GITHUB_REF_NAME:-main}"
+          ACTOR="${{ github.actor }}"
+          DATE_UTC="$(date -u +"%Y-%m-%d %H:%M:%SZ")"
+
+          {
+            echo "### 📦 Cambios en \`${REPO}\` @ \`${AFTER_SHA::7}\`"
+            echo ""
+            echo "**Autor:** ${ACTOR}  "
+            echo "**Rama:** ${BRANCH}  "
+            echo "**Fecha:** ${DATE_UTC}"
+            echo ""
+            echo "#### Archivos tocados"
+            git diff --name-status "${BEFORE_SHA}" "${AFTER_SHA}" || true
+            echo ""
+            echo "#### Commits"
+            git log --pretty=format:"- %h %s (%an)" "${BEFORE_SHA}..${AFTER_SHA}" || true
+            echo ""
+            echo "#### Diff corto"
+            git diff --stat "${BEFORE_SHA}" "${AFTER_SHA}" || true
+          } > digest.md
+
+          # Exporta el contenido como salida del step
+          DIGEST="$(cat digest.md)"
+          DIGEST="${DIGEST//'%'/'%25'}"
+          DIGEST="${DIGEST//$'\n'/'%0A'}"
+          DIGEST="${DIGEST//$'\r'/'%0D'}"
+          echo "body=${DIGEST}" >> "$GITHUB_OUTPUT"
+
+      - name: Create/Update tracking issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = "🔔 Change Digest (auto)";
+            const body = core.getInput('body');
+
+            // Busca issue abierta con ese título
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              per_page: 100
+            });
+
+            const existing = issues.find(i => i.title === title);
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body
+              });
+            }
+          body: ${{ steps.digest.outputs.body }}
