@@ -2,6 +2,8 @@ import { lazy, Suspense } from 'react';
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import { Loading } from '@shared/ui/components/Loading';
 import { PublicLayout } from '@shared/ui/layouts/PublicLayout';
+import { DevToolsPage } from '@/pages/dev/DevToolsPage';
+import { HerramientasEspecializadasPage } from '@/pages/demo/HerramientasEspecializadasPage';
 
 /**
  * Sistema de rutas de la aplicación
@@ -14,32 +16,30 @@ import { PublicLayout } from '@shared/ui/layouts/PublicLayout';
 // ÁREA PÚBLICA - Páginas sin autenticación
 // ============================================
 
-const HomePage = lazy(() => import('../pages/public/HomePage').then(m => ({ default: m.HomePage })));
-const ClasesPage = lazy(() => import('../pages/public/ClasesPage').then(m => ({ default: m.ClasesPage })));
-const ClaseDetallePage = lazy(() => import('../pages/public/ClaseDetallePage').then(m => ({ default: m.ClaseDetallePage })));
-const CursosPage = lazy(() => import('../pages/public/CursosPage').then(m => ({ default: m.CursosPage })));
-const CursoDetallePage = lazy(() => import('../pages/public/CursoDetallePage').then(m => ({ default: m.CursoDetallePage })));
-const PeticionesPage = lazy(() => import('../pages/public/PeticionesPage').then(m => ({ default: m.PeticionesPage })));
-const AcercaDePage = lazy(() => import('../pages/public/AcercaDePage').then(m => ({ default: m.AcercaDePage })));
-const PreguntasFrecuentesPage = lazy(() => import('../pages/public/PreguntasFrecuentesPage').then(m => ({ default: m.PreguntasFrecuentesPage })));
-const ContactoPage = lazy(() => import('../pages/public/ContactoPage').then(m => ({ default: m.ContactoPage })));
-const TerminosPage = lazy(() => import('../pages/public/TerminosPage').then(m => ({ default: m.TerminosPage })));
-const PrivacidadPage = lazy(() => import('../pages/public/PrivacidadPage').then(m => ({ default: m.PrivacidadPage })));
+const HomePage = lazy(() => import('../../pages/public/HomePage').then(m => ({ default: m.HomePage })));
+const ClasesPage = lazy(() => import('../../pages/public/ClasesPage').then(m => ({ default: m.ClasesPage })));
+const ClaseDetallePage = lazy(() => import('../../pages/public/ClaseDetallePage').then(m => ({ default: m.ClaseDetallePage })));
+const PeticionesPage = lazy(() => import('../../pages/public/PeticionesPage').then(m => ({ default: m.PeticionesPage })));
+const AcercaDePage = lazy(() => import('../../pages/public/AcercaDePage').then(m => ({ default: m.AcercaDePage })));
+const PreguntasFrecuentesPage = lazy(() => import('../../pages/public/PreguntasFrecuentesPage').then(m => ({ default: m.PreguntasFrecuentesPage })));
+const ContactoPage = lazy(() => import('../../pages/public/ContactoPage').then(m => ({ default: m.ContactoPage })));
+const TerminosPage = lazy(() => import('../../pages/public/TerminosPage').then(m => ({ default: m.TerminosPage })));
+const PrivacidadPage = lazy(() => import('../../pages/public/PrivacidadPage').then(m => ({ default: m.PrivacidadPage })));
 
 // Autenticación
-const IniciarSesionPage = lazy(() => import('../pages/auth/IniciarSesionPage').then(m => ({ default: m.IniciarSesionPage })));
-const RegistroPage = lazy(() => import('../pages/auth/RegistroPage').then(m => ({ default: m.RegistroPage })));
+const IniciarSesionPage = lazy(() => import('../../pages/auth/IniciarSesionPage').then(m => ({ default: m.IniciarSesionPage })));
+const RegistroPage = lazy(() => import('../../pages/auth/RegistroPage').then(m => ({ default: m.RegistroPage })));
 
 // Checkout
-const CarritoPage = lazy(() => import('../pages/checkout').then(m => ({ default: m.CarritoPage })));
-const ComprarPage = lazy(() => import('../pages/checkout').then(m => ({ default: m.ComprarPage })));
-const ExitoPage = lazy(() => import('../pages/checkout').then(m => ({ default: m.ExitoPage })));
+const CarritoPage = lazy(() => import('../../pages/checkout').then(m => ({ default: m.CarritoPage })));
+const ComprarPage = lazy(() => import('../../pages/checkout').then(m => ({ default: m.ComprarPage })));
+const ExitoPage = lazy(() => import('../../pages/checkout').then(m => ({ default: m.ExitoPage })));
 
 // Errores
-const NotFoundPage = lazy(() => import('../pages/errors').then(m => ({ default: m.NotFoundPage })));
+const NotFoundPage = lazy(() => import('../../pages/errors').then(m => ({ default: m.NotFoundPage })));
 
 // Dev Tools
-const DevToolsPage = lazy(() => import('../pages/dev').then(m => ({ default: m.DevToolsPage })));
+const DevToolsPage = lazy(() => import('../../pages/dev').then(m => ({ default: m.DevToolsPage })));
 
 /**
  * Componente wrapper para páginas públicas
@@ -77,14 +77,6 @@ const routes: RouteObject[] = [
   {
     path: '/clases/:id',
     element: <PublicPage>{lazyLoad(ClaseDetallePage, 'Cargando detalle')}</PublicPage>,
-  },
-  {
-    path: '/cursos',
-    element: <PublicPage>{lazyLoad(CursosPage, 'Cargando cursos')}</PublicPage>,
-  },
-  {
-    path: '/cursos/:id',
-    element: <PublicPage>{lazyLoad(CursoDetallePage, 'Cargando curso')}</PublicPage>,
   },
   {
     path: '/peticiones',
@@ -129,7 +121,7 @@ const routes: RouteObject[] = [
   {
     path: '/alumno/*',
     element: lazyLoad(
-      lazy(() => import('../pages/alumno').then(m => ({ default: m.AlumnoRoutes }))),
+      lazy(() => import('../../pages/alumno').then(m => ({ default: m.AlumnoRoutes }))),
       'Cargando dashboard de alumno'
     ),
   },
@@ -140,7 +132,7 @@ const routes: RouteObject[] = [
   {
     path: '/profesor/*',
     element: lazyLoad(
-      lazy(() => import('../pages/profesor').then(m => ({ default: m.ProfesorRoutes }))),
+      lazy(() => import('../../pages/profesor').then(m => ({ default: m.ProfesorRoutes }))),
       'Cargando dashboard de profesor'
     ),
   },
@@ -151,7 +143,7 @@ const routes: RouteObject[] = [
   {
     path: '/admin/*',
     element: lazyLoad(
-      lazy(() => import('../pages/admin').then(m => ({ default: m.AdminRoutes }))),
+      lazy(() => import('../../pages/admin').then(m => ({ default: m.AdminRoutes }))),
       'Cargando panel de administración'
     ),
   },
@@ -178,6 +170,10 @@ const routes: RouteObject[] = [
   {
     path: '/dev-tools',
     element: lazyLoad(DevToolsPage, 'Cargando herramientas'),
+  },
+  {
+    path: '/demo/herramientas',
+    element: lazyLoad(HerramientasEspecializadasPage, 'Cargando demo'),
   },
 
   // ============================================

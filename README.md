@@ -1,7 +1,7 @@
-# Estudiantes — Plataforma B2C profesores ↔ alumnos
+# AlenjandrIA — Tu Biblioteca de Conocimiento Infinito
 
 ## Visión y objetivo
-Estudiantes conecta alumnos con profesores especializados ofreciendo búsquedas por demanda, reservas ágiles y peticiones personalizadas. El objetivo inicial es entregar un frontend modular enfocado en tabs que pueda escalar hacia experiencias completas de marketplace con un backend listo para integrar contratos.
+AlenjandrIA conecta maestros y estudiantes para preservar y compartir el conocimiento. Como la legendaria Biblioteca de Alejandría, construimos un espacio donde cada lección es un tesoro del saber. El objetivo inicial es entregar un frontend modular enfocado en tabs que pueda escalar hacia experiencias completas de marketplace con un backend listo para integrar contratos.
 
 ## Arquitectura escalable
 El monorepo está dividido en dos paquetes:
@@ -73,12 +73,52 @@ npm run lint          # ESLint
 npm run format        # Prettier
 ```
 
+## Sistema de Navegación
+
+Se ha implementado un sistema completo de navegación con **44 páginas funcionales** organizadas en 6 áreas principales:
+
+### Áreas Implementadas
+
+1. **Área Pública** (11 páginas)
+   - Home, Clases, Peticiones, FAQ, Contacto, etc.
+   - Layout: PublicLayout con header y footer
+
+2. **Dashboard Alumno** (9 páginas)
+   - Dashboard, Mis Clases, Peticiones, Compras, Mensajes, etc.
+   - Layout: DashboardLayout (verde)
+
+3. **Dashboard Profesor** (9 páginas)
+   - Dashboard, Mis Clases, Agenda, Ingresos, Informes, etc.
+   - Layout: DashboardLayout (ámbar)
+
+4. **Panel Admin** (7 páginas)
+   - Dashboard, Usuarios, Clases, Finanzas, etc.
+   - Layout: DashboardLayout (violeta)
+
+5. **Checkout** (3 páginas)
+   - Carrito, Proceso de compra, Confirmación
+
+6. **Páginas de Error** (3 páginas)
+   - 404, 403, 500 con ilustraciones
+
+### Herramientas de Desarrollo
+
+- **Dev Tools** (`/dev-tools`): Menú para cambiar roles, índice de rutas, estadísticas
+- **Logs de navegación**: Consola muestra ruta actual en desarrollo
+- **Lazy loading**: Todas las rutas con React.lazy() y Suspense
+
+### Documentación
+
+- `client/NAVIGATION.md`: Mapa completo con diagrama Mermaid
+- `client/PAGINATION.md`: Sistema de paginación existente
+
 ## Roadmap (alto nivel)
-- **0.1.0**: Bootstrap escalable con tabs lazy, tokens/temas, primitives, Tailwind y Storybook.
-- **0.2.0**: Autenticación básica (placeholder) y guards de ruta.
-- **0.3.0**: CRUD de clases sobre mocks con formularios validados por Zod.
-- **0.4.0**: Integración con API `server/` (contratos y fetch vía Axios).
-- **1.0.0**: Release estable con flujos de reserva y publicación en producción.
+- **✅ 0.1.0**: Bootstrap escalable con tabs lazy, tokens/temas, primitives, Tailwind y Storybook.
+- **✅ 0.2.0**: Sistema de navegación completo con 44 páginas y 3 layouts por rol.
+- **⏳ 0.3.0**: Autenticación real y guards de ruta por rol.
+- **⏳ 0.4.0**: CRUD de clases sobre mocks con formularios validados por Zod.
+- **⏳ 0.5.0**: Integración con API `server/` (contratos y fetch vía Axios).
+- **⏳ 1.0.0**: Release estable con flujos de reserva y publicación en producción.
 
 ## Criterios de calidad
 - **Accesibilidad**: navegación por teclado en tabs (`role=tablist` + atajos), foco visible, contraste validado, aria-labels en navegación y estados.
